@@ -20,9 +20,10 @@ namespace TextFileSorter
 
         private static async Task SortFileAsync(SorterOptions options)
         {
+            IFileSorter fileSorter = new FileSorter();
             try
             {
-                await FileSorter.SortFileAsync(options.InputFile, options.OutputFile);
+                await fileSorter.SortFileAsync(options.InputFile, options.OutputFile);
                 Console.WriteLine("File sorting completed successfully.");
             }
             catch (Exception ex)
