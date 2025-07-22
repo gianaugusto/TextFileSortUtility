@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CommandLine;
-using TestFileGenerator.Configuration;
-using TestFileGenerator.Generation;
-using TestFileGenerator.Utils;
-using TestFileGenerator.Writing;
+using TestFileCreator.Configuration;
+using TestFileCreator.Generation;
+using TestFileCreator.Utils;
+using TestFileCreator.Writing;
 
-namespace TestFileGenerator
+namespace TestFileCreator
 {
     class Program
     {
@@ -23,7 +24,14 @@ namespace TestFileGenerator
 
         private static async Task GenerateFileAsync(GeneratorOptions options)
         {
-            ILineGenerator lineGenerator = new RandomLineGenerator(options.AverageLineSize);
+            // Generate a list of unique strings
+            List<string> strings = new List<string>();
+            for (int i = 1; i <= options.StringCount; i++)
+            {
+                strings.Add($"String{i}");
+            }
+
+            ILineGenerator lineGenerator = new TestFileLineGenerator(strings, options.MaxNumber);
             IFileWriter fileWriter = new BufferedFileWriter(options.OutputFile);
 
             try

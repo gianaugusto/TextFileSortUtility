@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace TestFileGenerator.Generation
+namespace TestFileCreator.Generation
 {
     public interface ILineGenerator
     {

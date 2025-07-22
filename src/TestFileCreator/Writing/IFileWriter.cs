@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace TestFileGenerator.Writing
+namespace TestFileCreator.Writing
 {
     public interface IFileWriter : IDisposable
     {
