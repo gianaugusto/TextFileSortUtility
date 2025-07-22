@@ -3,7 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace TestFileGenerator.Writing
+namespace TestFileCreator.Writing
 {
     public class BufferedFileWriter : IFileWriter
     {

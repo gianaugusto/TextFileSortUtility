@@ -1,6 +1,6 @@
 using System;
 
-namespace TestFileGenerator.Utils
+namespace TestFileCreator.Utils
 {
     public static class ProgressReporter
     {

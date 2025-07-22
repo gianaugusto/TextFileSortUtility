@@ -1,68 +1,68 @@
-# Test File Generator
+# Text File Sorting Utility
 
 ## Overview
 
-Test File Generator is a command-line tool for generating test files with random data. It is designed to be highly configurable and extensible, following SOLID principles and clean code practices.
+This repository contains two command-line tools for working with text files:
+
+1. **Test File Creator**: Generates test files with lines in the format `Number. String`.
+2. **Text File Sorter**: Sorts files with lines in the format `Number. String` based on the string part first, and the number part second.
 
 ## Features
 
-- Generate files with random data
-- Specify the number of lines and average line size
+- Generate and sort files with a specific format: `Number. String`
+- Specify the number of lines, number of different strings, and maximum number value
 - Buffered file writing for performance
 - Progress indicator during generation
-- Extensible architecture using the Strategy Pattern
+- Efficient sorting algorithm
+- Handles large files
 
 ## Requirements
 
-- .NET Core net8
+- .NET Core 8
 
-## Building and Testing
+## Projects
 
-### Build
+### 1. Test File Creator
 
-To build the project, run:
+#### Overview
 
-```sh
-dotnet build
-```
+Test File Creator is a command-line tool for generating test files with a specific format. It is designed to create files with lines containing a number followed by a string, which can be used for testing sorting algorithms.
 
-### Test
-
-To run the application, use:
+#### Usage
 
 ```sh
-dotnet run -- -o test_output.txt -l 1000 -s 100
+cd src/TestFileCreator
+dotnet run -- -o output.txt -n 1000 -s 10 -m 10000
 ```
 
-This will generate a file named `test_output.txt` with 1000 lines of random data, each with an average size of 100 bytes.
+This will generate a file named `output.txt` with 1000 lines, using 10 different strings, and with numbers ranging from 1 to 10000.
 
-## Usage
-
-### Command-line Options
+#### Command-line Options
 
 - `-o` or `--output`: Output file path (required)
-- `-l` or `--lines`: Number of lines to generate (default: 1000)
-- `-s` or `--line-size`: Average line size in bytes (default: 100)
+- `-n` or `--number`: Number of lines to generate (default: 1000)
+- `-s` or `--string-count`: Number of different strings to use (default: 10)
+- `-m` or `--max-number`: Maximum number value (default: 10000)
 
-### Example
+### 2. Text File Sorter
+
+#### Overview
+
+Text File Sorter is a command-line tool for sorting files with a specific format. It is designed to sort lines that contain a number followed by a string, with the sorting criteria being the string first, and the number second.
+
+#### Usage
 
 ```sh
-dotnet run -- -o test_output.txt -l 1000 -s 100
+cd src/TextFileSorter
+dotnet run -- -i input.txt -o output.txt
 ```
 
-## Project Structure
+This will sort the lines in `input.txt` and write the sorted lines to `output.txt`.
 
-- `Configuration/`: Command-line options
-  - `GeneratorOptions.cs`
-- `Generation/`: Line generation
-  - `ILineGenerator.cs`
-  - `RandomLineGenerator.cs`
-- `Writing/`: File writing
-  - `IFileWriter.cs`
-  - `BufferedFileWriter.cs`
-- `Utils/`: Utility classes
-  - `ProgressReporter.cs`
-- `Program.cs`: Entry point
+#### Command-line Options
+
+- `-i` or `--input`: Input file path (required)
+- `-o` or `--output`: Output file path (required)
 
 ## Design Principles
 
