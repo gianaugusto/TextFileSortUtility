@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TextFileSorter
 {
-
-    public class FileSorter: IFileSorter
+    public class FileSorter : IFileSorter
     {
-        public static async Task SortLargeFileAsync(string inputFile, string outputFile, int chunkSizeInLines = 1000000)
+        public async Task SortFileAsync(string inputFile, string outputFile, int chunkSizeInLines = 1000000)
         {
             var tempFiles = new List<string>();
 
@@ -29,9 +28,9 @@ namespace TextFileSorter
                 }
 
                 var sortedChunk = chunk
-                    .OrderBy(x => x.str)
-                    .ThenBy(x => x.number)
-                    .Select(x => $"{x.number}. {x.str}");
+                    .OrderBy(x => x.Item2)
+                    .ThenBy(x => x.Item1)
+                    .Select(x => $"{x.Item1}. {x.Item2}");
 
                 string tempPath = Path.GetTempFileName();
                 await File.WriteAllLinesAsync(tempPath, sortedChunk);
@@ -48,7 +47,7 @@ namespace TextFileSorter
             }
         }
 
-        private static async Task MergeSortedFilesAsync(List<string> sortedChunkFiles, string outputFile)
+        private async Task MergeSortedFilesAsync(List<string> sortedChunkFiles, string outputFile)
         {
             var readers = sortedChunkFiles.Select(f => new StreamReader(f)).ToList();
             var comparer = Comparer<(int, string)>.Create((a, b) =>
@@ -57,7 +56,7 @@ namespace TextFileSorter
                 return strCmp != 0 ? strCmp : a.Item1.CompareTo(b.Item1);
             });
 
-            var pq = new SortedDictionary<(int, string), int>(comparer);
+            var pq = new SortedSet<(int, string)>(comparer);
             var currentLines = new (int, string)?[readers.Count];
 
             for (int i = 0; i < readers.Count; i++)
@@ -69,7 +68,7 @@ namespace TextFileSorter
                     if (parts.Length == 2 && int.TryParse(parts[0], out int num))
                     {
                         var tuple = (num, parts[1]);
-                        pq[tuple] = i;
+                        pq.Add(tuple);
                         currentLines[i] = tuple;
                     }
                 }
@@ -79,19 +78,23 @@ namespace TextFileSorter
             while (pq.Count > 0)
             {
                 var kvp = pq.First();
-                pq.Remove(kvp.Key);
+                pq.Remove(kvp);
 
-                await writer.WriteLineAsync($"{kvp.Key.Item1}. {kvp.Key.Item2}");
+                await writer.WriteLineAsync($"{kvp.Item1}. {kvp.Item2}");
 
-                int fileIndex = kvp.Value;
-                var line = await readers[fileIndex].ReadLineAsync();
-                if (line != null)
+                int fileIndex = Array.IndexOf(currentLines, kvp);
+                if (fileIndex >= 0)
                 {
-                    var parts = line.Split(new[] { ". " }, 2, StringSplitOptions.None);
-                    if (parts.Length == 2 && int.TryParse(parts[0], out int num))
+                    var line = await readers[fileIndex].ReadLineAsync();
+                    if (line != null)
                     {
-                        var tuple = (num, parts[1]);
-                        pq[tuple] = fileIndex;
+                        var parts = line.Split(new[] { ". " }, 2, StringSplitOptions.None);
+                        if (parts.Length == 2 && int.TryParse(parts[0], out int num))
+                        {
+                            var tuple = (num, parts[1]);
+                            pq.Add(tuple);
+                            currentLines[fileIndex] = tuple;
+                        }
                     }
                 }
             }

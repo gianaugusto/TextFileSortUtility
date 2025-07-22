@@ -70,6 +70,17 @@ This will sort the lines in `input.txt` and write the sorted lines to `output.tx
 - Strategy Pattern
 - Clean Code Practices
 
+## Interface
+
+The `IFileSorter` interface defines the contract for file sorting operations. It is implemented by the `FileSorter` class, which provides the actual sorting functionality.
+
+```csharp
+public interface IFileSorter
+{
+    Task SortFileAsync(string inputFile, string outputFile);
+}
+```
+
 ## License
 
 This project is licensed under the GNU General Public License. See the [LICENSE](LICENSE) file for details.

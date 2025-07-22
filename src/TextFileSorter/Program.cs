@@ -23,7 +23,7 @@ namespace TextFileSorter
             IFileSorter fileSorter = new FileSorter();
             try
             {
-                await fileSorter.SortFileAsync(options.InputFile, options.OutputFile);
+                await fileSorter.SortFileAsync(options.InputFile, options.OutputFile, 1000000);
                 Console.WriteLine("File sorting completed successfully.");
             }
             catch (Exception ex)
